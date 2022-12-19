@@ -57,6 +57,14 @@ func (value CallbackRef) JSONLookup(token string) (interface{}, error) {
 	return ptr, err
 }
 
+// WithMinorOpenAPIVersion allows to enable specification minor feature version
+func (value *CallbackRef) WithMinorOpenAPIVersion(minorVersion uint64) *CallbackRef {
+	if value != nil {
+		value.Value.WithMinorOpenAPIVersion(minorVersion)
+	}
+	return value
+}
+
 // ExampleRef represents either a Example or a $ref to a Example.
 // When serializing and both fields are set, Ref is preferred over Value.
 type ExampleRef struct {
@@ -98,6 +106,14 @@ func (value ExampleRef) JSONLookup(token string) (interface{}, error) {
 
 	ptr, _, err := jsonpointer.GetForToken(value.Value, token)
 	return ptr, err
+}
+
+// WithMinorOpenAPIVersion allows to enable specification minor feature version
+func (value *ExampleRef) WithMinorOpenAPIVersion(minorVersion uint64) *ExampleRef {
+	if value != nil {
+		value.Value.WithMinorOpenAPIVersion(minorVersion)
+	}
+	return value
 }
 
 // HeaderRef represents either a Header or a $ref to a Header.
@@ -143,6 +159,14 @@ func (value HeaderRef) JSONLookup(token string) (interface{}, error) {
 	return ptr, err
 }
 
+// WithMinorOpenAPIVersion allows to enable specification minor feature version
+func (value *HeaderRef) WithMinorOpenAPIVersion(minorVersion uint64) *HeaderRef {
+	if value != nil {
+		value.Value.WithMinorOpenAPIVersion(minorVersion)
+	}
+	return value
+}
+
 // LinkRef represents either a Link or a $ref to a Link.
 // When serializing and both fields are set, Ref is preferred over Value.
 type LinkRef struct {
@@ -172,6 +196,14 @@ func (value *LinkRef) Validate(ctx context.Context, opts ...ValidationOption) er
 		return v.Validate(ctx)
 	}
 	return foundUnresolvedRef(value.Ref)
+}
+
+// WithMinorOpenAPIVersion allows to enable specification minor feature version
+func (value *LinkRef) WithMinorOpenAPIVersion(minorVersion uint64) *LinkRef {
+	if value != nil {
+		value.Value.WithMinorOpenAPIVersion(minorVersion)
+	}
+	return value
 }
 
 // ParameterRef represents either a Parameter or a $ref to a Parameter.
@@ -217,6 +249,14 @@ func (value ParameterRef) JSONLookup(token string) (interface{}, error) {
 	return ptr, err
 }
 
+// WithMinorOpenAPIVersion allows to enable specification minor feature version
+func (value *ParameterRef) WithMinorOpenAPIVersion(minorVersion uint64) *ParameterRef {
+	if value != nil {
+		value.Value.WithMinorOpenAPIVersion(minorVersion)
+	}
+	return value
+}
+
 // ResponseRef represents either a Response or a $ref to a Response.
 // When serializing and both fields are set, Ref is preferred over Value.
 type ResponseRef struct {
@@ -260,6 +300,14 @@ func (value ResponseRef) JSONLookup(token string) (interface{}, error) {
 	return ptr, err
 }
 
+// WithMinorOpenAPIVersion allows to enable specification minor feature version
+func (value *ResponseRef) WithMinorOpenAPIVersion(minorVersion uint64) *ResponseRef {
+	if value != nil {
+		value.Value.WithMinorOpenAPIVersion(minorVersion)
+	}
+	return value
+}
+
 // RequestBodyRef represents either a RequestBody or a $ref to a RequestBody.
 // When serializing and both fields are set, Ref is preferred over Value.
 type RequestBodyRef struct {
@@ -301,6 +349,14 @@ func (value RequestBodyRef) JSONLookup(token string) (interface{}, error) {
 
 	ptr, _, err := jsonpointer.GetForToken(value.Value, token)
 	return ptr, err
+}
+
+// WithMinorOpenAPIVersion allows to enable specification minor feature version
+func (value *RequestBodyRef) WithMinorOpenAPIVersion(minorVersion uint64) *RequestBodyRef {
+	if value != nil {
+		value.Value.WithMinorOpenAPIVersion(minorVersion)
+	}
+	return value
 }
 
 // SchemaRef represents either a Schema or a $ref to a Schema.
@@ -353,6 +409,14 @@ func (value SchemaRef) JSONLookup(token string) (interface{}, error) {
 	return ptr, err
 }
 
+// WithMinorOpenAPIVersion allows to enable specification minor feature version
+func (value *SchemaRef) WithMinorOpenAPIVersion(minorVersion uint64) *SchemaRef {
+	if value != nil {
+		value.Value.WithMinorOpenAPIVersion(minorVersion)
+	}
+	return value
+}
+
 // SecuritySchemeRef represents either a SecurityScheme or a $ref to a SecurityScheme.
 // When serializing and both fields are set, Ref is preferred over Value.
 type SecuritySchemeRef struct {
@@ -394,6 +458,14 @@ func (value SecuritySchemeRef) JSONLookup(token string) (interface{}, error) {
 
 	ptr, _, err := jsonpointer.GetForToken(value.Value, token)
 	return ptr, err
+}
+
+// WithMinorOpenAPIVersion allows to enable specification minor feature version
+func (value *SecuritySchemeRef) WithMinorOpenAPIVersion(minorVersion uint64) *SecuritySchemeRef {
+	if value != nil {
+		value.Value.WithMinorOpenAPIVersion(minorVersion)
+	}
+	return value
 }
 
 // marshalRefYAML returns the YAML encoding of ref values.

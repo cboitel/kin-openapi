@@ -158,3 +158,14 @@ func (operation *Operation) Validate(ctx context.Context, opts ...ValidationOpti
 
 	return nil
 }
+
+// WithMinorOpenAPIVersion allows to enable specification minor feature version
+func (operation *Operation) WithMinorOpenAPIVersion(minorVersion uint64) *Operation {
+	if operation != nil {
+		// TO DO : propagate to params, paths
+		for _, param := range operation.Parameters {
+			param.Value.WithMinorOpenAPIVersion(minorVersion)
+		}
+	}
+	return operation
+}

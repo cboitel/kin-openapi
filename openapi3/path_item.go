@@ -141,3 +141,13 @@ func (pathItem *PathItem) Validate(ctx context.Context, opts ...ValidationOption
 	}
 	return nil
 }
+
+// WithMinorOpenAPIVersion allows to enable specification minor feature version
+func (pathItem *PathItem) WithMinorOpenAPIVersion(minorVersion uint64) *PathItem {
+	if pathItem != nil {
+		for _, operation := range pathItem.Operations() {
+			operation.WithMinorOpenAPIVersion(minorVersion)
+		}
+	}
+	return pathItem
+}

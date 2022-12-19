@@ -29,6 +29,14 @@ func (p ParametersMap) JSONLookup(token string) (interface{}, error) {
 	return ref.Value, nil
 }
 
+// WithMinorOpenAPIVersion allows to enable specification minor feature version
+func (p ParametersMap) WithMinorOpenAPIVersion(minorVersion uint64) ParametersMap {
+	for _, param := range p {
+		param.WithMinorOpenAPIVersion(minorVersion)
+	}
+	return p
+}
+
 // Parameters is specified by OpenAPI/Swagger 3.0 standard.
 type Parameters []*ParameterRef
 
@@ -87,6 +95,14 @@ func (parameters Parameters) Validate(ctx context.Context, opts ...ValidationOpt
 		}
 	}
 	return nil
+}
+
+// WithMinorOpenAPIVersion allows to enable specification minor feature version
+func (parameters Parameters) WithMinorOpenAPIVersion(minorVersion uint64) Parameters {
+	for _, param := range parameters {
+		param.WithMinorOpenAPIVersion(minorVersion)
+	}
+	return parameters
 }
 
 // Parameter is specified by OpenAPI/Swagger 3.0 standard.
@@ -349,4 +365,12 @@ func (parameter *Parameter) Validate(ctx context.Context, opts ...ValidationOpti
 	}
 
 	return nil
+}
+
+// WithMinorOpenAPIVersion allows to enable specification minor feature version
+func (parameter *Parameter) WithMinorOpenAPIVersion(minorVersion uint64) *Parameter {
+	if parameter != nil {
+		parameter.Schema.Value.WithMinorOpenAPIVersion(minorVersion)
+	}
+	return parameter
 }

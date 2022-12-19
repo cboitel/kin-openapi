@@ -27,6 +27,14 @@ func (h Headers) JSONLookup(token string) (interface{}, error) {
 	return ref.Value, nil
 }
 
+// WithMinorOpenAPIVersion allows to enable specification minor feature version
+func (h Headers) WithMinorOpenAPIVersion(minorVersion uint64) Headers {
+	for _, header := range h {
+		header.WithMinorOpenAPIVersion(minorVersion)
+	}
+	return h
+}
+
 // Header is specified by OpenAPI/Swagger 3.0 standard.
 // See https://github.com/OAI/OpenAPI-Specification/blob/main/versions/3.0.3.md#header-object
 type Header struct {
@@ -132,4 +140,12 @@ func (header Header) JSONLookup(token string) (interface{}, error) {
 
 	v, _, err := jsonpointer.GetForToken(header.ExtensionProps, token)
 	return v, err
+}
+
+// WithMinorOpenAPIVersion allows to enable specification minor feature version
+func (header *Header) WithMinorOpenAPIVersion(minorVersion uint64) *Header {
+	if header != nil {
+		header.Parameter.WithMinorOpenAPIVersion(minorVersion)
+	}
+	return header
 }

@@ -26,6 +26,14 @@ func (s SecuritySchemes) JSONLookup(token string) (interface{}, error) {
 	return ref.Value, nil
 }
 
+// WithMinorOpenAPIVersion allows to enable specification minor feature version
+func (s SecuritySchemes) WithMinorOpenAPIVersion(minorVersion uint64) SecuritySchemes {
+	for _, scheme := range s {
+		scheme.WithMinorOpenAPIVersion(minorVersion)
+	}
+	return s
+}
+
 var _ jsonpointer.JSONPointable = (*SecuritySchemes)(nil)
 
 // SecurityScheme is specified by OpenAPI/Swagger standard version 3.
@@ -41,6 +49,8 @@ type SecurityScheme struct {
 	BearerFormat     string      `json:"bearerFormat,omitempty" yaml:"bearerFormat,omitempty"`
 	Flows            *OAuthFlows `json:"flows,omitempty" yaml:"flows,omitempty"`
 	OpenIdConnectUrl string      `json:"openIdConnectUrl,omitempty" yaml:"openIdConnectUrl,omitempty"`
+
+	specMinorVersion uint64 // defaults to 0 (3.0.z)
 }
 
 func NewSecurityScheme() *SecurityScheme {
@@ -176,6 +186,13 @@ func (ss *SecurityScheme) Validate(ctx context.Context, opts ...ValidationOption
 	return nil
 }
 
+// WithMinorOpenAPIVersion allows to enable specification minor feature version
+func (ss *SecurityScheme) WithMinorOpenAPIVersion(minorVersion uint64) *SecurityScheme {
+	ss.specMinorVersion = minorVersion
+	ss.WithMinorOpenAPIVersion(minorVersion)
+	return ss
+}
+
 // OAuthFlows is specified by OpenAPI/Swagger standard version 3.
 // See https://github.com/OAI/OpenAPI-Specification/blob/main/versions/3.0.3.md#oauth-flows-object
 type OAuthFlows struct {
@@ -185,6 +202,8 @@ type OAuthFlows struct {
 	Password          *OAuthFlow `json:"password,omitempty" yaml:"password,omitempty"`
 	ClientCredentials *OAuthFlow `json:"clientCredentials,omitempty" yaml:"clientCredentials,omitempty"`
 	AuthorizationCode *OAuthFlow `json:"authorizationCode,omitempty" yaml:"authorizationCode,omitempty"`
+
+	specMinorVersion uint64 // defaults to 0 (3.0.z)
 }
 
 type oAuthFlowType int
@@ -233,6 +252,14 @@ func (flows *OAuthFlows) Validate(ctx context.Context, opts ...ValidationOption)
 	return nil
 }
 
+// WithMinorOpenAPIVersion allows to enable specification minor feature version
+func (flows *OAuthFlows) WithMinorOpenAPIVersion(minorVersion uint64) *OAuthFlows {
+	if flows != nil {
+		flows.Implicit.WithMinorOpenAPIVersion(minorVersion)
+	}
+	return flows
+}
+
 // OAuthFlow is specified by OpenAPI/Swagger standard version 3.
 // See https://github.com/OAI/OpenAPI-Specification/blob/main/versions/3.0.3.md#oauth-flow-object
 type OAuthFlow struct {
@@ -242,6 +269,8 @@ type OAuthFlow struct {
 	TokenURL         string            `json:"tokenUrl,omitempty" yaml:"tokenUrl,omitempty"`
 	RefreshURL       string            `json:"refreshUrl,omitempty" yaml:"refreshUrl,omitempty"`
 	Scopes           map[string]string `json:"scopes" yaml:"scopes"`
+
+	specMinorVersion uint64 // defaults to 0 (3.0.z)
 }
 
 // MarshalJSON returns the JSON encoding of OAuthFlow.
@@ -310,4 +339,12 @@ func (flow *OAuthFlow) validate(ctx context.Context, typ oAuthFlowType, opts ...
 	}
 
 	return flow.Validate(ctx, opts...)
+}
+
+// WithMinorOpenAPIVersion allows to enable specification minor feature version
+func (flow *OAuthFlow) WithMinorOpenAPIVersion(minorVersion uint64) *OAuthFlow {
+	if flow != nil {
+		flow.specMinorVersion = minorVersion
+	}
+	return flow
 }

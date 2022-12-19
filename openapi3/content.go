@@ -122,3 +122,11 @@ func (content Content) Validate(ctx context.Context, opts ...ValidationOption) e
 	}
 	return nil
 }
+
+// WithMinorOpenAPIVersion allows to enable specification minor feature version
+func (content Content) WithMinorOpenAPIVersion(minorVersion uint64) Content {
+	for _, mediaType := range content {
+		mediaType.WithMinorOpenAPIVersion(minorVersion)
+	}
+	return content
+}

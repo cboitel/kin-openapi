@@ -16,6 +16,8 @@ type ExternalDocs struct {
 
 	Description string `json:"description,omitempty" yaml:"description,omitempty"`
 	URL         string `json:"url,omitempty" yaml:"url,omitempty"`
+
+	specMinorVersion uint64 // defaults to 0 (3.0.z)
 }
 
 // MarshalJSON returns the JSON encoding of ExternalDocs.
@@ -39,4 +41,12 @@ func (e *ExternalDocs) Validate(ctx context.Context, opts ...ValidationOption) e
 		return fmt.Errorf("url is incorrect: %w", err)
 	}
 	return nil
+}
+
+// WithMinorOpenAPIVersion allows to enable specification minor feature version
+func (e *ExternalDocs) WithMinorOpenAPIVersion(minorVersion uint64) *ExternalDocs {
+	if e != nil {
+		e.specMinorVersion = minorVersion
+	}
+	return e
 }

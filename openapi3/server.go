@@ -49,6 +49,16 @@ func (servers Servers) MatchURL(parsedURL *url.URL) (*Server, []string, string) 
 	return nil, nil, ""
 }
 
+// WithMinorOpenAPIVersion allows to enable specification minor feature version
+func (servers Servers) WithMinorOpenAPIVersion(minorVersion uint64) Servers {
+	if servers != nil {
+		for _, server := range servers {
+			server.WithMinorOpenAPIVersion(minorVersion)
+		}
+	}
+	return servers
+}
+
 // Server is specified by OpenAPI/Swagger standard version 3.
 // See https://github.com/OAI/OpenAPI-Specification/blob/main/versions/3.0.3.md#server-object
 type Server struct {
@@ -57,6 +67,8 @@ type Server struct {
 	URL         string                     `json:"url" yaml:"url"`
 	Description string                     `json:"description,omitempty" yaml:"description,omitempty"`
 	Variables   map[string]*ServerVariable `json:"variables,omitempty" yaml:"variables,omitempty"`
+
+	specVersion uint64
 }
 
 // BasePath returns the base path extracted from the default values of variables, if any.
@@ -198,6 +210,17 @@ func (server *Server) Validate(ctx context.Context, opts ...ValidationOption) (e
 	return
 }
 
+// WithMinorOpenAPIVersion allows to enable specification minor feature version
+func (server *Server) WithMinorOpenAPIVersion(minorVersion uint64) *Server {
+	if server != nil {
+		server.specVersion = minorVersion
+		for _, variable := range server.Variables {
+			variable.WithMinorOpenAPIVersion(minorVersion)
+		}
+	}
+	return server
+}
+
 // ServerVariable is specified by OpenAPI/Swagger standard version 3.
 // See https://github.com/OAI/OpenAPI-Specification/blob/main/versions/3.0.3.md#server-variable-object
 type ServerVariable struct {
@@ -206,6 +229,8 @@ type ServerVariable struct {
 	Enum        []string `json:"enum,omitempty" yaml:"enum,omitempty"`
 	Default     string   `json:"default,omitempty" yaml:"default,omitempty"`
 	Description string   `json:"description,omitempty" yaml:"description,omitempty"`
+
+	specVersion uint64
 }
 
 // MarshalJSON returns the JSON encoding of ServerVariable.
@@ -230,4 +255,12 @@ func (serverVariable *ServerVariable) Validate(ctx context.Context, opts ...Vali
 		return fmt.Errorf("field default is required in %s", data)
 	}
 	return nil
+}
+
+// WithMinorOpenAPIVersion allows to enable specification minor feature version
+func (serverVariable *ServerVariable) WithMinorOpenAPIVersion(minorVersion uint64) *ServerVariable {
+	if serverVariable != nil {
+		serverVariable.specVersion = minorVersion
+	}
+	return serverVariable
 }

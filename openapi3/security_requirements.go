@@ -27,6 +27,14 @@ func (srs SecurityRequirements) Validate(ctx context.Context, opts ...Validation
 	return nil
 }
 
+// WithMinorOpenAPIVersion allows to enable specification minor feature version
+func (srs SecurityRequirements) WithMinorOpenAPIVersion(openapiMinorVersion uint64) SecurityRequirements {
+	for _, security := range srs {
+		security.WithMinorOpenAPIVersion(openapiMinorVersion)
+	}
+	return srs
+}
+
 // SecurityRequirement is specified by OpenAPI/Swagger standard version 3.
 // See https://github.com/OAI/OpenAPI-Specification/blob/main/versions/3.0.3.md#security-requirement-object
 type SecurityRequirement map[string][]string
@@ -48,4 +56,9 @@ func (security *SecurityRequirement) Validate(ctx context.Context, opts ...Valid
 	// ctx = WithValidationOptions(ctx, opts...)
 
 	return nil
+}
+
+// WithMinorOpenAPIVersion allows to enable specification minor feature version
+func (security *SecurityRequirement) WithMinorOpenAPIVersion(openapiMinorVersion uint64) *SecurityRequirement {
+	return security
 }

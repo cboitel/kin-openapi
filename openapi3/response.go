@@ -67,6 +67,14 @@ func (responses Responses) JSONLookup(token string) (interface{}, error) {
 	return ref.Value, nil
 }
 
+// WithMinorOpenAPIVersion allows to enable specification minor feature version
+func (responses Responses) WithMinorOpenAPIVersion(minorVersion uint64) Responses {
+	for _, response := range responses {
+		response.WithMinorOpenAPIVersion(minorVersion)
+	}
+	return responses
+}
+
 // Response is specified by OpenAPI/Swagger 3.0 standard.
 // See https://github.com/OAI/OpenAPI-Specification/blob/main/versions/3.0.3.md#response-object
 type Response struct {
@@ -153,4 +161,14 @@ func (response *Response) Validate(ctx context.Context, opts ...ValidationOption
 		}
 	}
 	return nil
+}
+
+// WithMinorOpenAPIVersion allows to enable specification minor feature version
+func (response *Response) WithMinorOpenAPIVersion(minorVersion uint64) *Response {
+	if response != nil {
+		response.Headers.WithMinorOpenAPIVersion(minorVersion)
+		response.Content.WithMinorOpenAPIVersion(minorVersion)
+		response.Links.WithMinorOpenAPIVersion(minorVersion)
+	}
+	return response
 }

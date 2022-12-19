@@ -18,6 +18,9 @@ type Info struct {
 	Contact        *Contact `json:"contact,omitempty" yaml:"contact,omitempty"`
 	License        *License `json:"license,omitempty" yaml:"license,omitempty"`
 	Version        string   `json:"version" yaml:"version"` // Required
+
+	specMinorVersion uint64 // defaults to 0 (3.0.z)
+
 }
 
 // MarshalJSON returns the JSON encoding of Info.
@@ -57,6 +60,16 @@ func (info *Info) Validate(ctx context.Context, opts ...ValidationOption) error 
 	return nil
 }
 
+// WithMinorOpenAPIVersion allows to enable specification minor feature version
+func (info *Info) WithMinorOpenAPIVersion(minorVersion uint64) *Info {
+	if info != nil {
+		info.specMinorVersion = minorVersion
+		info.Contact.WithMinorOpenAPIVersion(minorVersion)
+		info.License.WithMinorOpenAPIVersion(minorVersion)
+	}
+	return info
+}
+
 // Contact is specified by OpenAPI/Swagger standard version 3.
 // See https://github.com/OAI/OpenAPI-Specification/blob/main/versions/3.0.3.md#contact-object
 type Contact struct {
@@ -65,6 +78,8 @@ type Contact struct {
 	Name  string `json:"name,omitempty" yaml:"name,omitempty"`
 	URL   string `json:"url,omitempty" yaml:"url,omitempty"`
 	Email string `json:"email,omitempty" yaml:"email,omitempty"`
+
+	specMinorVersion uint64 // defaults to 0 (3.0.z)
 }
 
 // MarshalJSON returns the JSON encoding of Contact.
@@ -84,6 +99,14 @@ func (contact *Contact) Validate(ctx context.Context, opts ...ValidationOption) 
 	return nil
 }
 
+// WithMinorOpenAPIVersion allows to enable specification minor feature version
+func (contact *Contact) WithMinorOpenAPIVersion(minorVersion uint64) *Contact {
+	if contact != nil {
+		contact.specMinorVersion = minorVersion
+	}
+	return contact
+}
+
 // License is specified by OpenAPI/Swagger standard version 3.
 // See https://github.com/OAI/OpenAPI-Specification/blob/main/versions/3.0.3.md#license-object
 type License struct {
@@ -91,6 +114,8 @@ type License struct {
 
 	Name string `json:"name" yaml:"name"` // Required
 	URL  string `json:"url,omitempty" yaml:"url,omitempty"`
+
+	specMinorVersion uint64 // defaults to 0 (3.0.z)
 }
 
 // MarshalJSON returns the JSON encoding of License.
@@ -111,4 +136,12 @@ func (license *License) Validate(ctx context.Context, opts ...ValidationOption) 
 		return errors.New("value of license name must be a non-empty string")
 	}
 	return nil
+}
+
+// WithMinorOpenAPIVersion allows to enable specification minor feature version
+func (license *License) WithMinorOpenAPIVersion(minorVersion uint64) *License {
+	if license != nil {
+		license.specMinorVersion = minorVersion
+	}
+	return license
 }

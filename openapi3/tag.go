@@ -31,6 +31,14 @@ func (tags Tags) Validate(ctx context.Context, opts ...ValidationOption) error {
 	return nil
 }
 
+// WithMinorOpenAPIVersion allows to enable specification minor feature version
+func (tags Tags) WithMinorOpenAPIVersion(minorVersion uint64) Tags {
+	for _, v := range tags {
+		v.WithMinorOpenAPIVersion(minorVersion)
+	}
+	return tags
+}
+
 // Tag is specified by OpenAPI/Swagger 3.0 standard.
 // See https://github.com/OAI/OpenAPI-Specification/blob/main/versions/3.0.3.md#tag-object
 type Tag struct {
@@ -39,6 +47,8 @@ type Tag struct {
 	Name         string        `json:"name,omitempty" yaml:"name,omitempty"`
 	Description  string        `json:"description,omitempty" yaml:"description,omitempty"`
 	ExternalDocs *ExternalDocs `json:"externalDocs,omitempty" yaml:"externalDocs,omitempty"`
+
+	specMinorVersion uint64 // defaults to 0 (3.0.z)
 }
 
 // MarshalJSON returns the JSON encoding of Tag.
@@ -61,4 +71,10 @@ func (t *Tag) Validate(ctx context.Context, opts ...ValidationOption) error {
 		}
 	}
 	return nil
+}
+
+// WithMinorOpenAPIVersion allows to enable specification minor feature version
+func (t *Tag) WithMinorOpenAPIVersion(minorVersion uint64) *Tag {
+	t.specMinorVersion = minorVersion
+	return t
 }

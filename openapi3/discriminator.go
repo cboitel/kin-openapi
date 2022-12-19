@@ -13,6 +13,8 @@ type Discriminator struct {
 
 	PropertyName string            `json:"propertyName" yaml:"propertyName"`
 	Mapping      map[string]string `json:"mapping,omitempty" yaml:"mapping,omitempty"`
+
+	specMinorVersion uint64 // defaults to 0 (3.0.z)
 }
 
 // MarshalJSON returns the JSON encoding of Discriminator.
@@ -30,4 +32,12 @@ func (discriminator *Discriminator) Validate(ctx context.Context, opts ...Valida
 	// ctx = WithValidationOptions(ctx, opts...)
 
 	return nil
+}
+
+// WithMinorOpenAPIVersion allows to enable specification minor feature version
+func (discriminator *Discriminator) WithMinorOpenAPIVersion(minorVersion uint64) *Discriminator {
+	if discriminator != nil {
+		discriminator.specMinorVersion = minorVersion
+	}
+	return discriminator
 }

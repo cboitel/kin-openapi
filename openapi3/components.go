@@ -23,6 +23,8 @@ type Components struct {
 	Examples        Examples        `json:"examples,omitempty" yaml:"examples,omitempty"`
 	Links           Links           `json:"links,omitempty" yaml:"links,omitempty"`
 	Callbacks       Callbacks       `json:"callbacks,omitempty" yaml:"callbacks,omitempty"`
+
+	specMinorVersion uint64 // defaults to 0 (3.0.z)
 }
 
 func NewComponents() Components {
@@ -179,6 +181,24 @@ func (components *Components) Validate(ctx context.Context, opts ...ValidationOp
 	}
 
 	return
+}
+
+// WithMinorOpenAPIVersion allows to enable specification minor feature version
+func (components *Components) WithMinorOpenAPIVersion(minorVersion uint64) *Components {
+	if components != nil {
+		components.specMinorVersion = minorVersion
+		// not used yet here but propoagate down to internal properties
+		components.Schemas.WithMinorOpenAPIVersion(minorVersion)
+		components.Parameters.WithMinorOpenAPIVersion(minorVersion)
+		components.Headers.WithMinorOpenAPIVersion(minorVersion)
+		components.RequestBodies.WithMinorOpenAPIVersion(minorVersion)
+		components.Responses.WithMinorOpenAPIVersion(minorVersion)
+		components.SecuritySchemes.WithMinorOpenAPIVersion(minorVersion)
+		components.Examples.WithMinorOpenAPIVersion(minorVersion)
+		components.Links.WithMinorOpenAPIVersion(minorVersion)
+		components.Callbacks.WithMinorOpenAPIVersion(minorVersion)
+	}
+	return components
 }
 
 const identifierPattern = `^[a-zA-Z0-9._-]+$`

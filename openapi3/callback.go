@@ -25,6 +25,13 @@ func (c Callbacks) JSONLookup(token string) (interface{}, error) {
 	return ref.Value, nil
 }
 
+// WithMinorOpenAPIVersion allows to enable specification minor feature version
+func (c Callbacks) WithMinorOpenAPIVersion(minorVersion uint64) {
+	for _, cref := range c {
+		cref.WithMinorOpenAPIVersion(minorVersion)
+	}
+}
+
 // Callback is specified by OpenAPI/Swagger standard version 3.
 // See https://github.com/OAI/OpenAPI-Specification/blob/main/versions/3.0.3.md#callback-object
 type Callback map[string]*PathItem
@@ -45,4 +52,12 @@ func (callback Callback) Validate(ctx context.Context, opts ...ValidationOption)
 		}
 	}
 	return nil
+}
+
+// WithMinorOpenAPIVersion allows to enable specification minor feature version
+func (callback Callback) WithMinorOpenAPIVersion(minorVersion uint64) Callback {
+	for _, pathItem := range callback {
+		pathItem.WithMinorOpenAPIVersion(minorVersion)
+	}
+	return callback
 }

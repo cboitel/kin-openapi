@@ -22,7 +22,8 @@ type T struct {
 	Tags         Tags                 `json:"tags,omitempty" yaml:"tags,omitempty"`
 	ExternalDocs *ExternalDocs        `json:"externalDocs,omitempty" yaml:"externalDocs,omitempty"`
 
-	visited visitedComponent
+	visited          visitedComponent
+	specMinorVersion uint64 // defaults to 0 (3.0.z)
 }
 
 // MarshalJSON returns the JSON encoding of T.
@@ -32,9 +33,31 @@ func (doc *T) MarshalJSON() ([]byte, error) {
 
 // UnmarshalJSON sets T to a copy of data.
 func (doc *T) UnmarshalJSON(data []byte) error {
-	return jsoninfo.UnmarshalStrictStruct(data, doc)
+	err := jsoninfo.UnmarshalStrictStruct(data, doc)
+	if err != nil {
+		doc.WithMinorOpenAPIVersion(doc.OpenAPI.Minor())
+	}
+	return err
 }
 
+// WithMinorOpenAPIVersion allows to enable specification minor feature version
+func (doc *T) WithMinorOpenAPIVersion(minorVersion uint64) *T {
+	if doc != nil {
+		// store so it can be used in validation context if needed
+		doc.specMinorVersion = minorVersion
+		// propagate down to internal properties
+		doc.Components.WithMinorOpenAPIVersion(minorVersion)
+		doc.Info.WithMinorOpenAPIVersion(minorVersion)
+		doc.Paths.WithMinorOpenAPIVersion(minorVersion)
+		doc.Security.WithMinorOpenAPIVersion(minorVersion)
+		doc.Servers.WithMinorOpenAPIVersion(minorVersion)
+		doc.Tags.WithMinorOpenAPIVersion(minorVersion)
+		doc.ExternalDocs.WithMinorOpenAPIVersion(minorVersion)
+	}
+	return doc
+}
+
+// AddOperation updates T wih a new OpenAPI operation for given method and path
 func (doc *T) AddOperation(path string, method string, operation *Operation) {
 	paths := doc.Paths
 	if paths == nil {
@@ -47,6 +70,7 @@ func (doc *T) AddOperation(path string, method string, operation *Operation) {
 		paths[path] = pathItem
 	}
 	pathItem.SetOperation(method, operation)
+	operation.WithMinorOpenAPIVersion(doc.specMinorVersion)
 }
 
 func (doc *T) AddServer(server *Server) {

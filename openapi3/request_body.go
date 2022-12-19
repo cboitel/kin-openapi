@@ -27,6 +27,14 @@ func (r RequestBodies) JSONLookup(token string) (interface{}, error) {
 	return ref.Value, nil
 }
 
+// WithMinorOpenAPIVersion allows to enable specification minor feature version
+func (r RequestBodies) WithMinorOpenAPIVersion(minorVersion uint64) RequestBodies {
+	for _, requestBody := range r {
+		requestBody.WithMinorOpenAPIVersion(minorVersion)
+	}
+	return r
+}
+
 // RequestBody is specified by OpenAPI/Swagger 3.0 standard.
 // See https://github.com/OAI/OpenAPI-Specification/blob/main/versions/3.0.3.md#request-body-object
 type RequestBody struct {
@@ -117,4 +125,12 @@ func (requestBody *RequestBody) Validate(ctx context.Context, opts ...Validation
 	}
 
 	return requestBody.Content.Validate(ctx)
+}
+
+// WithMinorOpenAPIVersion allows to enable specification minor feature version
+func (requestBody *RequestBody) WithMinorOpenAPIVersion(minorVersion uint64) *RequestBody {
+	if requestBody != nil {
+		requestBody.Content.WithMinorOpenAPIVersion(minorVersion)
+	}
+	return requestBody
 }

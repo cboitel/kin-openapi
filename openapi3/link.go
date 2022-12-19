@@ -25,6 +25,16 @@ func (links Links) JSONLookup(token string) (interface{}, error) {
 	return ref.Value, nil
 }
 
+// WithMinorOpenAPIVersion allows to enable specification minor feature version
+func (links *Links) WithMinorOpenAPIVersion(minorVersion uint64) *Links {
+	if links != nil {
+		for _, link := range *links {
+			link.WithMinorOpenAPIVersion(minorVersion)
+		}
+	}
+	return links
+}
+
 var _ jsonpointer.JSONPointable = (*Links)(nil)
 
 // Link is specified by OpenAPI/Swagger standard version 3.
@@ -61,4 +71,10 @@ func (link *Link) Validate(ctx context.Context, opts ...ValidationOption) error 
 		return fmt.Errorf("operationId %q and operationRef %q are mutually exclusive", link.OperationID, link.OperationRef)
 	}
 	return nil
+}
+
+// WithMinorOpenAPIVersion allows to enable specification minor feature version
+func (link *Link) WithMinorOpenAPIVersion(minorVersion uint64) *Link {
+	link.Server.WithMinorOpenAPIVersion(minorVersion)
+	return link
 }

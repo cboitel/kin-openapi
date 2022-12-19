@@ -141,3 +141,12 @@ func (mediaType MediaType) JSONLookup(token string) (interface{}, error) {
 	v, _, err := jsonpointer.GetForToken(mediaType.ExtensionProps, token)
 	return v, err
 }
+
+// WithMinorOpenAPIVersion allows to enable specification minor feature version
+func (mediaType *MediaType) WithMinorOpenAPIVersion(minorVersion uint64) *MediaType {
+	if mediaType != nil {
+		mediaType.Examples.WithMinorOpenAPIVersion(minorVersion)
+		mediaType.Schema.WithMinorOpenAPIVersion(minorVersion)
+	}
+	return mediaType
+}

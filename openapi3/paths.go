@@ -138,6 +138,14 @@ func (paths Paths) Find(key string) *PathItem {
 	return nil
 }
 
+// WithMinorOpenAPIVersion allows to enable specification minor feature version
+func (paths Paths) WithMinorOpenAPIVersion(minorVersion uint64) Paths {
+	for _, pathItem := range paths {
+		pathItem.WithMinorOpenAPIVersion(minorVersion)
+	}
+	return paths
+}
+
 func (paths Paths) validateUniqueOperationIDs() error {
 	operationIDs := make(map[string]string)
 	for urlPath, pathItem := range paths {

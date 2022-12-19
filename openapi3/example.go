@@ -27,6 +27,14 @@ func (e Examples) JSONLookup(token string) (interface{}, error) {
 	return ref.Value, nil
 }
 
+// WithMinorOpenAPIVersion allows to enable specification minor feature version
+func (e Examples) WithMinorOpenAPIVersion(minorVersion uint64) Examples {
+	for _, e := range e {
+		e.WithMinorOpenAPIVersion(minorVersion)
+	}
+	return e
+}
+
 // Example is specified by OpenAPI/Swagger 3.0 standard.
 // See https://github.com/OAI/OpenAPI-Specification/blob/main/versions/3.0.3.md#example-object
 type Example struct {
@@ -36,6 +44,8 @@ type Example struct {
 	Description   string      `json:"description,omitempty" yaml:"description,omitempty"`
 	Value         interface{} `json:"value,omitempty" yaml:"value,omitempty"`
 	ExternalValue string      `json:"externalValue,omitempty" yaml:"externalValue,omitempty"`
+
+	specMinorVersion uint64 // defaults to 0 (3.0.z)
 }
 
 func NewExample(value interface{}) *Example {
@@ -66,4 +76,12 @@ func (example *Example) Validate(ctx context.Context, opts ...ValidationOption) 
 	}
 
 	return nil
+}
+
+// WithMinorOpenAPIVersion allows to enable specification minor feature version
+func (example *Example) WithMinorOpenAPIVersion(minorVersion uint64) *Example {
+	if example != nil {
+		example.specMinorVersion = minorVersion
+	}
+	return example
 }

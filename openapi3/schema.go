@@ -88,6 +88,14 @@ func (s Schemas) JSONLookup(token string) (interface{}, error) {
 	return ref.Value, nil
 }
 
+// WithMinorOpenAPIVersion allows to enable specification minor feature version
+func (s Schemas) WithMinorOpenAPIVersion(minorVersion uint64) Schemas {
+	for _, schema := range s {
+		schema.Value.WithMinorOpenAPIVersion(minorVersion)
+	}
+	return s
+}
+
 type SchemaRefs []*SchemaRef
 
 var _ jsonpointer.JSONPointable = (*SchemaRefs)(nil)
@@ -109,6 +117,14 @@ func (s SchemaRefs) JSONLookup(token string) (interface{}, error) {
 		return &Ref{Ref: ref.Ref}, nil
 	}
 	return ref.Value, nil
+}
+
+// WithMinorOpenAPIVersion allows to enable specification minor feature version
+func (s SchemaRefs) WithMinorOpenAPIVersion(minorVersion uint64) SchemaRefs {
+	for _, ref := range s {
+		ref.WithMinorOpenAPIVersion(minorVersion)
+	}
+	return s
 }
 
 // Schema is specified by OpenAPI/Swagger 3.0 standard.
@@ -166,6 +182,8 @@ type Schema struct {
 	AdditionalPropertiesAllowed *bool          `multijson:"additionalProperties,omitempty" json:"-" yaml:"-"` // In this order...
 	AdditionalProperties        *SchemaRef     `multijson:"additionalProperties,omitempty" json:"-" yaml:"-"` // ...for multijson
 	Discriminator               *Discriminator `json:"discriminator,omitempty" yaml:"discriminator,omitempty"`
+
+	specMinorVersion uint64 // defaults to 0 (3.0.z)
 }
 
 var _ jsonpointer.JSONPointable = (*Schema)(nil)
@@ -1804,4 +1822,17 @@ func RegisterArrayUniqueItemsChecker(fn SliceUniqueItemsChecker) {
 
 func unsupportedFormat(format string) error {
 	return fmt.Errorf("unsupported 'format' value %q", format)
+}
+
+// WithMinorOpenAPIVersion allows to enable specification minor feature version
+func (schema *Schema) WithMinorOpenAPIVersion(minorVersion uint64) *Schema {
+	if schema != nil {
+		schema.specMinorVersion = minorVersion
+		schema.AllOf.WithMinorOpenAPIVersion(minorVersion)
+		schema.AnyOf.WithMinorOpenAPIVersion(minorVersion)
+		schema.Not.WithMinorOpenAPIVersion(minorVersion)
+		schema.Properties.WithMinorOpenAPIVersion(minorVersion)
+		schema.AdditionalProperties.WithMinorOpenAPIVersion(minorVersion)
+	}
+	return schema
 }
