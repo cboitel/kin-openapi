@@ -13,7 +13,7 @@ import (
 type T struct {
 	ExtensionProps `json:"-" yaml:"-"`
 
-	OpenAPI      string               `json:"openapi" yaml:"openapi"` // Required
+	OpenAPI      Version              `json:"openapi" yaml:"openapi"` // Required
 	Components   Components           `json:"components,omitempty" yaml:"components,omitempty"`
 	Info         *Info                `json:"info" yaml:"info"`   // Required
 	Paths        Paths                `json:"paths" yaml:"paths"` // Required
@@ -58,12 +58,16 @@ func (doc *T) AddServer(server *Server) {
 func (doc *T) Validate(ctx context.Context, opts ...ValidationOption) error {
 	ctx = WithValidationOptions(ctx, opts...)
 
-	if doc.OpenAPI == "" {
-		return errors.New("value of openapi must be a non-empty string")
-	}
-
 	var wrap func(error) error
 	// NOTE: only mention info/components/paths/... key in this func's errors.
+
+	wrap = func(e error) error { return fmt.Errorf("invalid openapi value: %w", e) }
+	if doc.OpenAPI == "" {
+		return wrap(errors.New("must be a non-empty string"))
+	}
+	if err := doc.OpenAPI.Validate(ctx); err != nil {
+		return wrap(err)
+	}
 
 	wrap = func(e error) error { return fmt.Errorf("invalid components: %w", e) }
 	if err := doc.Components.Validate(ctx); err != nil {

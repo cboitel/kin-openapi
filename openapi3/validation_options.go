@@ -11,6 +11,7 @@ type ValidationOptions struct {
 	SchemaPatternValidationDisabled                  bool
 	ExamplesValidationDisabled                       bool
 	examplesValidationAsReq, examplesValidationAsRes bool
+	versionValidationDisabled                        bool
 }
 
 type validationOptionsKey struct{}
@@ -59,6 +60,13 @@ func EnableExamplesValidation() ValidationOption {
 func DisableExamplesValidation() ValidationOption {
 	return func(options *ValidationOptions) {
 		options.ExamplesValidationDisabled = true
+	}
+}
+
+// DisableVersionValidation disables openapi version validation.
+func DisableVersionValidation() ValidationOption {
+	return func(options *ValidationOptions) {
+		options.versionValidationDisabled = true
 	}
 }
 

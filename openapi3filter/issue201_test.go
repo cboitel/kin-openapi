@@ -17,7 +17,7 @@ func TestIssue201(t *testing.T) {
 	loader := openapi3.NewLoader()
 	ctx := loader.Context
 	spec := `
-openapi: '3'
+openapi: '3.0.0'
 info:
   version: 1.0.0
   title: Sample API
